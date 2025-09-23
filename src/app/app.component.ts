@@ -286,7 +286,7 @@ export class AppComponent implements OnInit {
 
   buildConfirmationUrl(formData: any): string {
     // Base confirmation URL
-    const baseUrl = 'https://arabconfirmationpage.netlify.app/';
+    const baseUrl = 'https://arabconfirmationusa.netlify.app/';
     
     // Get form data and Facebook campaign parameters
     const name = encodeURIComponent(formData.name || '');
