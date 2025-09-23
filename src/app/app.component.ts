@@ -381,7 +381,7 @@ export class AppComponent implements OnInit {
 
   // Format phone number as user types
   formatPhoneNumber(event: any) {
-    console.log(event);
+    // console.log(event);
     
     let value = event.target.value.replace(/\D/g, '');
     
