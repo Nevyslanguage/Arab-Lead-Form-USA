@@ -381,8 +381,6 @@ export class AppComponent implements OnInit {
 
   // Format phone number as user types
   formatPhoneNumber(event: any) {
-    // console.log(event);
-    
     let value = event.target.value.replace(/\D/g, '');
     
     // Limit to 10 digits (US phone number without country code)
@@ -391,12 +389,14 @@ export class AppComponent implements OnInit {
     }
     
     // Format as (xxx) xxx-xxxx (without +1 prefix in the input field)
-    if (value.length >= 6) {
-      // value = `(${value.substring(0, 3)}) ${value.substring(3, 6)}-${value.substring(6, 10)}`;
-    } else if (value.length >= 3) {
-      // value = `(${value.substring(0, 3)}) ${value.substring(3)}`;
-    } else if (value.length > 0) {
+    if (value.length === 0) {
+      value = '';
+    } else if (value.length <= 3) {
       value = `(${value}`;
+    } else if (value.length <= 6) {
+      value = `(${value.substring(0, 3)}) ${value.substring(3)}`;
+    } else {
+      value = `(${value.substring(0, 3)}) ${value.substring(3, 6)}-${value.substring(6, 10)}`;
     }
     
     this.leadForm.get('phone')?.setValue(value, { emitEvent: false });
