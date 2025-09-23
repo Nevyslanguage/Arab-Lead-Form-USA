@@ -66,11 +66,11 @@ export class AppComponent implements OnInit {
       availability: ['', Validators.required],
       specificTimeSlot: ['', Validators.required],
       name: ['', Validators.required],
-      phone: ['', [Validators.required, this.canadianPhoneValidator]],
+      phone: ['', [Validators.required, this.usPhoneValidator]],
       whatsappSame: ['', Validators.required],
       whatsappNumber: [''],
       email: ['', [Validators.required, Validators.email, this.emailValidator]],
-      province: ['', Validators.required],
+      state: ['', Validators.required],
       campaignName: [''],
       adsetName: [''],
       adName: [''],
@@ -202,7 +202,7 @@ export class AppComponent implements OnInit {
       params.set('level_preference', formData.levelPreference || '');
       params.set('best_time_to_contact', formData.availability || '');
       params.set('detailed_contact_time', formData.specificTimeSlot || '');
-      params.set('province', formData.province || '');
+      params.set('state', formData.state || '');
       
       // Facebook campaign tracking data
       params.set('campaign_name', formData.campaignName || '');
@@ -268,7 +268,7 @@ export class AppComponent implements OnInit {
     description += `Level Preference: ${formData.levelPreference || 'Not provided'}\n`;
     description += `Best Time to Contact: ${formData.availability || 'Not provided'}\n`;
     description += `Detailed Contact Time: ${formData.specificTimeSlot || 'Not provided'}\n`;
-    description += `Province: ${formData.province || 'Not provided'}\n`;
+    description += `State: ${formData.state || 'Not provided'}\n`;
     
     // Facebook campaign data
     if (formData.campaignName) {
@@ -354,8 +354,8 @@ export class AppComponent implements OnInit {
     return null; // Valid email
   }
 
-  // Canadian phone number validator
-  canadianPhoneValidator(control: any) {
+  // US phone number validator
+  usPhoneValidator(control: any) {
     if (!control.value) {
       return null;
     }
@@ -363,27 +363,27 @@ export class AppComponent implements OnInit {
     // Remove all non-digit characters
     const phoneNumber = control.value.replace(/\D/g, '');
     
-    // Canadian phone numbers should be 10 digits (without country code)
+    // US phone numbers should be 10 digits (without country code)
     if (phoneNumber.length === 10) {
-      // Check if it starts with valid Canadian area codes
-      const validAreaCodes = [
-        '204', '226', '236', '249', '250', '263', '289', '306', '343', '354', '365', '367', '368', '382', '387', '403', '416', '418', '428', '431', '437', '438', '450', '468', '474', '506', '514', '519', '548', '579', '581', '584', '587', '604', '613', '639', '647', '672', '683', '705', '709', '742', '753', '778', '780', '782', '807', '819', '825', '867', '873', '879', '902', '905'
-      ];
-      
+      // Check if it starts with valid US area codes (2-9 for first digit, 0-9 for second and third)
       const areaCode = phoneNumber.substring(0, 3);
-      if (validAreaCodes.includes(areaCode)) {
-        return null; // Valid Canadian phone number
+      const firstDigit = areaCode.charAt(0);
+      
+      // US area codes: first digit must be 2-9, second and third can be 0-9
+      // But cannot be 000, 111, 222, etc. (though some are valid, we'll be more lenient)
+      if (firstDigit >= '2' && firstDigit <= '9') {
+        return null; // Valid US phone number
       }
     }
     
-    return { invalidCanadianPhone: true };
+    return { invalidUSPhone: true };
   }
 
   // Format phone number as user types
   formatPhoneNumber(event: any) {
     let value = event.target.value.replace(/\D/g, '');
     
-    // Limit to 10 digits (Canadian phone number without country code)
+    // Limit to 10 digits (US phone number without country code)
     if (value.length > 10) {
       value = value.substring(0, 10);
     }
@@ -565,8 +565,8 @@ export class AppComponent implements OnInit {
       if (field.errors?.['invalidEmail']) {
         errors.push('يرجى إدخال بريد إلكتروني صحيح');
       }
-      if (field.errors?.['invalidCanadianPhone']) {
-        errors.push('يرجى إدخال رقم هاتف كندي صحيح');
+      if (field.errors?.['invalidUSPhone']) {
+        errors.push('يرجى إدخال رقم هاتف أمريكي صحيح');
       }
     }
     
