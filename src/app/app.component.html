@@ -95,7 +95,7 @@
     <!-- Name Input -->
     <div class="form-group">
       <label class="form-label">اسمك*</label>
-      <input type="text" formControlName="name" class="form-input" required (blur)="leadForm.get('name')?.markAsTouched()">
+      <input type="text" formControlName="name" class="form-input english-input" dir="ltr" required (blur)="leadForm.get('name')?.markAsTouched()">
       <div *ngIf="hasFieldErrors('name')" class="error-message">
         <span *ngFor="let error of getFieldErrors('name')">{{ error }}</span>
       </div>
@@ -178,7 +178,7 @@
         </div>
         <input type="tel" formControlName="whatsappNumber" class="form-input english-input whatsapp-number-input" placeholder="رقم الهاتف بدون رمز الدولة" (input)="formatWhatsAppNumber($event)" (blur)="leadForm.get('whatsappNumber')?.markAsTouched()">
       </div>
-      <div class="form-note">الرقم الكامل: {{ selectedCountryCode }}{{ leadForm.get('whatsappNumber')?.value || 'رقم الهاتف' }}</div>
+      <div class="form-note">الرقم الكامل: <span dir="ltr">{{ getFormattedWhatsAppDisplay() }}</span></div>
       <div *ngIf="hasFieldErrors('whatsappNumber')" class="error-message">
         <span *ngFor="let error of getFieldErrors('whatsappNumber')">{{ error }}</span>
       </div>
@@ -187,7 +187,7 @@
     <!-- Email Address -->
     <div class="form-group">
       <label class="form-label">عنوان البريد الإلكتروني*</label>
-      <input type="email" formControlName="email" class="form-input" placeholder="example@email.com" (blur)="formatEmail($event); leadForm.get('email')?.markAsTouched()" required>
+      <input type="email" formControlName="email" class="form-input english-input" placeholder="example@email.com" dir="ltr" (blur)="formatEmail($event); leadForm.get('email')?.markAsTouched()" required>
       <div class="form-note">إذا لم نتمكن من الوصول إليك عبر الهاتف، سنحاول الاتصال بك عبر البريد الإلكتروني.</div>
       <div *ngIf="hasFieldErrors('email')" class="error-message">
         <span *ngFor="let error of getFieldErrors('email')">{{ error }}</span>
@@ -198,60 +198,40 @@
     <div class="form-group">
       <p class="province-intro">نود أن نعرف من أين يأتي طلابنا المحتملون 😊</p>
       <label class="form-label">الولاية*</label>
-      <select formControlName="state" class="form-select" required (change)="leadForm.get('state')?.markAsTouched()">
-        <option value="">...Select ✓</option>
-        <option value="Alabama">Alabama</option>
-        <option value="Alaska">Alaska</option>
-        <option value="Arizona">Arizona</option>
-        <option value="Arkansas">Arkansas</option>
-        <option value="California">California</option>
-        <option value="Colorado">Colorado</option>
-        <option value="Connecticut">Connecticut</option>
-        <option value="Delaware">Delaware</option>
-        <option value="Florida">Florida</option>
-        <option value="Georgia">Georgia</option>
-        <option value="Hawaii">Hawaii</option>
-        <option value="Idaho">Idaho</option>
-        <option value="Illinois">Illinois</option>
-        <option value="Indiana">Indiana</option>
-        <option value="Iowa">Iowa</option>
-        <option value="Kansas">Kansas</option>
-        <option value="Kentucky">Kentucky</option>
-        <option value="Louisiana">Louisiana</option>
-        <option value="Maine">Maine</option>
-        <option value="Maryland">Maryland</option>
-        <option value="Massachusetts">Massachusetts</option>
-        <option value="Michigan">Michigan</option>
-        <option value="Minnesota">Minnesota</option>
-        <option value="Mississippi">Mississippi</option>
-        <option value="Missouri">Missouri</option>
-        <option value="Montana">Montana</option>
-        <option value="Nebraska">Nebraska</option>
-        <option value="Nevada">Nevada</option>
-        <option value="New Hampshire">New Hampshire</option>
-        <option value="New Jersey">New Jersey</option>
-        <option value="New Mexico">New Mexico</option>
-        <option value="New York">New York</option>
-        <option value="North Carolina">North Carolina</option>
-        <option value="North Dakota">North Dakota</option>
-        <option value="Ohio">Ohio</option>
-        <option value="Oklahoma">Oklahoma</option>
-        <option value="Oregon">Oregon</option>
-        <option value="Pennsylvania">Pennsylvania</option>
-        <option value="Rhode Island">Rhode Island</option>
-        <option value="South Carolina">South Carolina</option>
-        <option value="South Dakota">South Dakota</option>
-        <option value="Tennessee">Tennessee</option>
-        <option value="Texas">Texas</option>
-        <option value="Utah">Utah</option>
-        <option value="Vermont">Vermont</option>
-        <option value="Virginia">Virginia</option>
-        <option value="Washington">Washington</option>
-        <option value="West Virginia">West Virginia</option>
-        <option value="Wisconsin">Wisconsin</option>
-        <option value="Wyoming">Wyoming</option>
-        <option value="District of Columbia">District of Columbia</option>
-      </select>
+      <div class="state-dropdown-container" [class.ng-invalid]="leadForm.get('state')?.invalid" [class.ng-touched]="leadForm.get('state')?.touched">
+        <div class="state-select-display" (click)="toggleStateDropdown()">
+          <span class="state-display-text">{{ getSelectedStateDisplay() }}</span>
+          <span class="dropdown-arrow">▼</span>
+        </div>
+        <div class="state-dropdown" *ngIf="showStateDropdown">
+          <div class="state-search-container">
+            <input type="text" 
+                   class="state-search-input" 
+                   placeholder="البحث عن الولاية..." 
+                   [(ngModel)]="stateSearchTerm"
+                   [ngModelOptions]="{standalone: true}"
+                   (input)="onStateSearch($event)"
+                   (keyup)="onStateSearch($event)"
+                   (paste)="onStateSearch($event)"
+                   (click)="$event.stopPropagation()">
+            <button type="button" 
+                    class="clear-search-btn" 
+                    *ngIf="stateSearchTerm"
+                    (click)="onStateSearchClear()"
+                    (click)="$event.stopPropagation()">
+              ✕
+            </button>
+          </div>
+          <div class="state-options-container">
+            <div class="state-option" *ngFor="let state of filteredStates" (click)="selectState(state)">
+              <span class="state-name">{{ state.label }}</span>
+            </div>
+            <div class="no-results" *ngIf="filteredStates.length === 0 && stateSearchTerm">
+              <span>لم يتم العثور على ولايات لـ "{{ stateSearchTerm }}"</span>
+            </div>
+          </div>
+        </div>
+      </div>
       <div *ngIf="hasFieldErrors('state')" class="error-message">
         <span *ngFor="let error of getFieldErrors('state')">{{ error }}</span>
       </div>

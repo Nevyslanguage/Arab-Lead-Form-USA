@@ -17,12 +17,73 @@ export class AppComponent implements OnInit {
   title = 'arableadform';
   leadForm: FormGroup;
   selectedTimeSlots: any[] = [];
-  selectedCountryCode = '+963'; // Default to Syria
+  selectedCountryCode = '+963';
   showCountryDropdown = false;
   countrySearchTerm = '';
   filteredCountries: any[] = [];
 
+  // State dropdown properties
+  showStateDropdown = false;
+  stateSearchTerm = '';
+  filteredStates: any[] = [];
+  selectedState = '';
+
   countryCodes: Country[] = COUNTRIES;
+
+  // US States data
+  usStates = [
+    { value: 'Alabama', label: 'Alabama' },
+    { value: 'Alaska', label: 'Alaska' },
+    { value: 'Arizona', label: 'Arizona' },
+    { value: 'Arkansas', label: 'Arkansas' },
+    { value: 'California', label: 'California' },
+    { value: 'Colorado', label: 'Colorado' },
+    { value: 'Connecticut', label: 'Connecticut' },
+    { value: 'Delaware', label: 'Delaware' },
+    { value: 'Florida', label: 'Florida' },
+    { value: 'Georgia', label: 'Georgia' },
+    { value: 'Hawaii', label: 'Hawaii' },
+    { value: 'Idaho', label: 'Idaho' },
+    { value: 'Illinois', label: 'Illinois' },
+    { value: 'Indiana', label: 'Indiana' },
+    { value: 'Iowa', label: 'Iowa' },
+    { value: 'Kansas', label: 'Kansas' },
+    { value: 'Kentucky', label: 'Kentucky' },
+    { value: 'Louisiana', label: 'Louisiana' },
+    { value: 'Maine', label: 'Maine' },
+    { value: 'Maryland', label: 'Maryland' },
+    { value: 'Massachusetts', label: 'Massachusetts' },
+    { value: 'Michigan', label: 'Michigan' },
+    { value: 'Minnesota', label: 'Minnesota' },
+    { value: 'Mississippi', label: 'Mississippi' },
+    { value: 'Missouri', label: 'Missouri' },
+    { value: 'Montana', label: 'Montana' },
+    { value: 'Nebraska', label: 'Nebraska' },
+    { value: 'Nevada', label: 'Nevada' },
+    { value: 'New Hampshire', label: 'New Hampshire' },
+    { value: 'New Jersey', label: 'New Jersey' },
+    { value: 'New Mexico', label: 'New Mexico' },
+    { value: 'New York', label: 'New York' },
+    { value: 'North Carolina', label: 'North Carolina' },
+    { value: 'North Dakota', label: 'North Dakota' },
+    { value: 'Ohio', label: 'Ohio' },
+    { value: 'Oklahoma', label: 'Oklahoma' },
+    { value: 'Oregon', label: 'Oregon' },
+    { value: 'Pennsylvania', label: 'Pennsylvania' },
+    { value: 'Rhode Island', label: 'Rhode Island' },
+    { value: 'South Carolina', label: 'South Carolina' },
+    { value: 'South Dakota', label: 'South Dakota' },
+    { value: 'Tennessee', label: 'Tennessee' },
+    { value: 'Texas', label: 'Texas' },
+    { value: 'Utah', label: 'Utah' },
+    { value: 'Vermont', label: 'Vermont' },
+    { value: 'Virginia', label: 'Virginia' },
+    { value: 'Washington', label: 'Washington' },
+    { value: 'West Virginia', label: 'West Virginia' },
+    { value: 'Wisconsin', label: 'Wisconsin' },
+    { value: 'Wyoming', label: 'Wyoming' },
+    { value: 'District of Columbia', label: 'District of Columbia' }
+  ];
 
   timeSlots = {
     '9am-11am': [
@@ -414,7 +475,78 @@ export class AppComponent implements OnInit {
       value = value.substring(0, maxDigits);
     }
     
+    // Format based on country code
+    value = this.formatNumberByCountry(value, this.selectedCountryCode);
+    
     this.leadForm.get('whatsappNumber')?.setValue(value, { emitEvent: false });
+  }
+
+  // Format number based on country code
+  formatNumberByCountry(number: string, countryCode: string): string {
+    if (!number) return '';
+    
+    // US/Canada (+1) - format as (xxx) xxx-xxxx
+    if (countryCode === '+1') {
+      if (number.length === 0) return '';
+      if (number.length <= 3) return `(${number}`;
+      if (number.length <= 6) return `(${number.substring(0, 3)}) ${number.substring(3)}`;
+      return `(${number.substring(0, 3)}) ${number.substring(3, 6)}-${number.substring(6, 10)}`;
+    }
+    
+    // UK (+44) - format as xxxx xxx xxxx
+    if (countryCode === '+44') {
+      if (number.length <= 4) return number;
+      if (number.length <= 7) return `${number.substring(0, 4)} ${number.substring(4)}`;
+      return `${number.substring(0, 4)} ${number.substring(4, 7)} ${number.substring(7, 11)}`;
+    }
+    
+    // Germany (+49) - format as xxx xxxxxxx
+    if (countryCode === '+49') {
+      if (number.length <= 3) return number;
+      return `${number.substring(0, 3)} ${number.substring(3, 10)}`;
+    }
+    
+    // France (+33) - format as x xx xx xx xx
+    if (countryCode === '+33') {
+      if (number.length <= 1) return number;
+      if (number.length <= 3) return `${number.substring(0, 1)} ${number.substring(1)}`;
+      if (number.length <= 5) return `${number.substring(0, 1)} ${number.substring(1, 3)} ${number.substring(3)}`;
+      if (number.length <= 7) return `${number.substring(0, 1)} ${number.substring(1, 3)} ${number.substring(3, 5)} ${number.substring(5)}`;
+      return `${number.substring(0, 1)} ${number.substring(1, 3)} ${number.substring(3, 5)} ${number.substring(5, 7)} ${number.substring(7, 9)}`;
+    }
+    
+    // Syria (+963) - format as xxx xxx xxxx
+    if (countryCode === '+963') {
+      if (number.length <= 3) return number;
+      if (number.length <= 6) return `${number.substring(0, 3)} ${number.substring(3)}`;
+      return `${number.substring(0, 3)} ${number.substring(3, 6)} ${number.substring(6, 10)}`;
+    }
+    
+    // Saudi Arabia (+966) - format as xxx xxx xxxx
+    if (countryCode === '+966') {
+      if (number.length <= 3) return number;
+      if (number.length <= 6) return `${number.substring(0, 3)} ${number.substring(3)}`;
+      return `${number.substring(0, 3)} ${number.substring(3, 6)} ${number.substring(6, 10)}`;
+    }
+    
+    // UAE (+971) - format as xxx xxx xxxx
+    if (countryCode === '+971') {
+      if (number.length <= 3) return number;
+      if (number.length <= 6) return `${number.substring(0, 3)} ${number.substring(3)}`;
+      return `${number.substring(0, 3)} ${number.substring(3, 6)} ${number.substring(6, 10)}`;
+    }
+    
+    // Egypt (+20) - format as xxx xxx xxxx
+    if (countryCode === '+20') {
+      if (number.length <= 3) return number;
+      if (number.length <= 6) return `${number.substring(0, 3)} ${number.substring(3)}`;
+      return `${number.substring(0, 3)} ${number.substring(3, 6)} ${number.substring(6, 10)}`;
+    }
+    
+    // Default formatting for other countries - add spaces every 3 digits
+    if (number.length <= 3) return number;
+    if (number.length <= 6) return `${number.substring(0, 3)} ${number.substring(3)}`;
+    return `${number.substring(0, 3)} ${number.substring(3, 6)} ${number.substring(6)}`;
   }
 
   // Get maximum number of digits allowed for each country code
@@ -426,6 +558,16 @@ export class AppComponent implements OnInit {
   getFullWhatsAppNumber(): string {
     const countryCode = this.selectedCountryCode;
     const number = this.leadForm.get('whatsappNumber')?.value || '';
+    return countryCode + number;
+  }
+
+  // Get formatted WhatsApp number for display
+  getFormattedWhatsAppDisplay(): string {
+    const countryCode = this.selectedCountryCode;
+    const number = this.leadForm.get('whatsappNumber')?.value || '';
+    if (!number) {
+      return 'رقم الهاتف';
+    }
     return countryCode + number;
   }
 
@@ -538,12 +680,65 @@ export class AppComponent implements OnInit {
     console.log('Country code changed to:', this.selectedCountryCode);
   }
 
+  // State dropdown methods
+  toggleStateDropdown() {
+    this.showStateDropdown = !this.showStateDropdown;
+    if (this.showStateDropdown) {
+      this.filteredStates = [...this.usStates];
+      this.stateSearchTerm = '';
+    }
+  }
+
+  selectState(state: any) {
+    this.selectedState = state.value;
+    this.leadForm.get('state')?.setValue(state.value);
+    this.showStateDropdown = false;
+    this.stateSearchTerm = '';
+    this.leadForm.get('state')?.markAsTouched();
+  }
+
+  onStateSearch(event: any) {
+    this.stateSearchTerm = event.target.value;
+    this.filterStates();
+  }
+
+  filterStates() {
+    const searchTerm = this.stateSearchTerm?.trim() || '';
+    
+    if (!searchTerm) {
+      this.filteredStates = [...this.usStates];
+      return;
+    }
+    
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    this.filteredStates = this.usStates.filter(state => 
+      state.label.toLowerCase().includes(lowerSearchTerm) ||
+      state.value.toLowerCase().includes(lowerSearchTerm)
+    );
+  }
+
+  onStateSearchClear() {
+    this.stateSearchTerm = '';
+    this.filterStates();
+  }
+
+  getSelectedStateDisplay(): string {
+    if (!this.selectedState) {
+      return '...Select ✓';
+    }
+    const state = this.usStates.find(s => s.value === this.selectedState);
+    return state ? state.label : this.selectedState;
+  }
+
   // Close dropdown when clicking outside
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event) {
     const target = event.target as HTMLElement;
     if (!target.closest('.whatsapp-prefix-container')) {
       this.showCountryDropdown = false;
+    }
+    if (!target.closest('.state-dropdown-container')) {
+      this.showStateDropdown = false;
     }
   }
 

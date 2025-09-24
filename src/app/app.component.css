@@ -132,8 +132,8 @@ html, body {
 /* Override for specific English-only placeholders */
 input[placeholder*="(xxx)"]::placeholder,
 input[placeholder*="example@"]::placeholder {
-  text-align: left;
-  direction: ltr;
+  text-align: left !important;
+  direction: ltr !important;
 }
 
 /* Radio Button Styles */
@@ -242,8 +242,8 @@ input[placeholder*="example@"]::placeholder {
 .form-select {
   width: 100%;
   padding: 12px 15px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
   background-color: white;
   font-size: 16px;
   color: #333;
@@ -256,22 +256,27 @@ input[placeholder*="example@"]::placeholder {
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 12px center;
-  background-size: 16px;
-  padding-right: 40px;
+  background-size: 18px;
+  padding-right: 45px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .form-select:hover {
-  background-color: white;
-  color: black;
-  border-color: #e0e0e0;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-color: #f8f9fa;
+  color: #333;
+  border-color: #035a7e;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
 }
 
 .form-select:focus {
   outline: none;
-  border-color: rgba(3, 90, 126, 1);
+  border-color: #035a7e;
   background-color: white;
-  box-shadow: 0 0 0 1px rgba(3, 90, 126, 0.2);
+  box-shadow: 0 0 0 3px rgba(3, 90, 126, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
 }
 
 .form-select.ng-invalid.ng-touched {
@@ -282,12 +287,268 @@ input[placeholder*="example@"]::placeholder {
 .form-select option {
   background-color: white !important;
   color: #333 !important;
-  padding: 8px 12px;
+  padding: 12px 15px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  transition: all 0.2s ease;
 }
 
 .form-select option:hover {
-  background-color: #2587b8;
+  background-color: #035a7e !important;
+  color: white !important;
+  transform: scale(1.02);
+}
+
+.form-select option:checked {
+  background-color: #035a7e !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+/* Custom scrollbar for select dropdown */
+.form-select::-webkit-scrollbar {
+  width: 8px;
+}
+
+.form-select::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.form-select::-webkit-scrollbar-thumb {
+  background: #035a7e;
+  border-radius: 4px;
+}
+
+.form-select::-webkit-scrollbar-thumb:hover {
+  background: #024a6b;
+}
+
+/* State Select Specific Styling */
+.state-select {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 2px solid #e0e0e0;
+  font-size: 17px;
+  font-weight: 600;
+  min-height: 50px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.state-select:hover {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-color: #035a7e;
+  box-shadow: 0 6px 16px rgba(3, 90, 126, 0.15);
+}
+
+.state-select:focus {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-color: #035a7e;
+  box-shadow: 0 0 0 4px rgba(3, 90, 126, 0.2), 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.state-select option {
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.state-select option:first-child {
+  background: linear-gradient(135deg, #035a7e 0%, #024a6b 100%) !important;
+  color: white !important;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 8px 8px 0 0;
+}
+
+.state-select option:not(:first-child):hover {
+  background: linear-gradient(135deg, #035a7e 0%, #024a6b 100%) !important;
+  color: white !important;
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(3, 90, 126, 0.3);
+}
+
+/* Custom State Dropdown Styling */
+.state-dropdown-container {
+  position: relative;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.state-select-display {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  font-size: 17px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  min-height: 50px;
+  box-sizing: border-box;
+}
+
+.state-select-display:hover {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-color: #035a7e;
+  box-shadow: 0 6px 16px rgba(3, 90, 126, 0.15);
+  transform: translateY(-1px);
+}
+
+.state-display-text {
+  flex: 1;
+  text-align: left;
+  direction: ltr;
+}
+
+.dropdown-arrow {
+  font-size: 12px;
+  color: #666;
+  transition: transform 0.3s ease;
+}
+
+.state-dropdown-container:hover .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.state-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 2px solid #035a7e;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-height: 300px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.state-search-container {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  position: relative;
+}
+
+.state-search-input {
+  width: 100%;
+  padding: 10px 35px 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  direction: rtl;
+  text-align: right;
+  box-sizing: border-box;
+}
+
+.state-search-input:focus {
+  outline: none;
+  border-color: #035a7e;
+  box-shadow: 0 0 0 2px rgba(3, 90, 126, 0.2);
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-search-btn:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.state-options-container {
+  max-height: 240px;
+  overflow-y: auto;
+  background: white;
+}
+
+.state-option {
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.state-option:hover {
+  background: linear-gradient(135deg, #035a7e 0%, #024a6b 100%);
   color: white;
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(3, 90, 126, 0.3);
+}
+
+.state-option:last-child {
+  border-bottom: none;
+}
+
+.state-name {
+  flex: 1;
+  direction: ltr;
+  text-align: left;
+}
+
+.no-results {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  background: #f8f9fa;
+}
+
+/* Custom scrollbar for state options */
+.state-options-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.state-options-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.state-options-container::-webkit-scrollbar-thumb {
+  background: #035a7e;
+  border-radius: 4px;
+}
+
+.state-options-container::-webkit-scrollbar-thumb:hover {
+  background: #024a6b;
+}
+
+/* Invalid state styling */
+.state-dropdown-container.ng-invalid.ng-touched .state-select-display {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2);
 }
 
 /* Warning Message */
@@ -327,6 +588,12 @@ input[placeholder*="example@"]::placeholder {
 .english-input::placeholder {
   text-align: right !important;
   direction: rtl !important;
+}
+
+/* Override for email placeholder specifically */
+.english-input[placeholder*="example@"]::placeholder {
+  text-align: left !important;
+  direction: ltr !important;
 }
 
 /* Ensure Arabic placeholders are RTL */
